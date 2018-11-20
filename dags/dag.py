@@ -17,8 +17,9 @@ weekday_person_to_email = {
 }
 
 def get_person_to_mail(execution_date: Pendulum, **context):
-    return weekday_person_to_email[int(execution_date.format("d"))]
+    return weekday_person_to_email[int(execution_date.date().strftime("%u"))-1]
 
+with DAG():
 
 dag = DAG(dag_id="skipdag",default_args=args)
 brancher = BranchPythonOperator(task_id="brancher", python_callable=get_person_to_mail, provide_context=True, dag=dag)
