@@ -7,21 +7,15 @@ from airflow.operators.python_operator import PythonOperator
 
 
 def print_days_till_christmas(execution_date, **context):
-    christmas_date = datetime.date(2018, 12, 24)
-    print("Days til christmas: {}".format(christmas_date - execution_date))
-
+    print(execution_date)
 
 args = {"owner": "Harmen", "start_date": airflow.utils.dates.days_ago(14)}
 
 p = print_days_till_christmas
 from airflow.operators.bash_operator import BashOperator
 
-
-
-
-
 with DAG(
-        dag_id="exercise2",
+        dag_id="newdag",
         default_args=args
 ):
     print_days_till_christmas = PythonOperator(task_id="print_days_till_christmas",
