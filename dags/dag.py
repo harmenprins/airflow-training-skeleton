@@ -1,13 +1,50 @@
 import airflow
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
+from pendulum import Pendulum
+
+args = {"owner": "Harmen", "start_date": airflow.utils.dates.days_ago(14)}
+weekday_person_to_email = {
+    0: "Bob",
+    1: "Joe",
+    2: "Alice",
+    3: "Joe",
+    4: "Alice",
+    5: "Alice",
+    6: "Alice"
+}
+
+def get_person_to_mail(execution_date: Pendulum, **context):
+    return weekday_person_to_email[int(execution_date.format("d"))]
+
+
+with DAG(dag_id="skipdag",default_args=args):
+    brancher = BranchPythonOperator(task_id="brancher", python_callable=get_person_to_mail, provide_context=True)
+    for person in ['Bob', 'Joe', 'Alice']:
+        t = DummyOperator(task_id=person)
+        brancher >> t
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def print_days_till_christmas(execution_date, **context):
     print(execution_date)
 
-args = {"owner": "Harmen", "start_date": airflow.utils.dates.days_ago(14)}
 
 p = print_days_till_christmas
 from airflow.operators.bash_operator import BashOperator
