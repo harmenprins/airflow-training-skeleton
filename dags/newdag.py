@@ -18,7 +18,7 @@ from airflow.operators.bash_operator import BashOperator
 
 
 def SleepOperator(s: int = 5):
-    return BashOperator(task_id="wait_" + s, bash_command= "sleep " + s)
+    return BashOperator(task_id="wait_" + str(s), bash_command= "sleep " + str(s))
 
 
 with DAG(
