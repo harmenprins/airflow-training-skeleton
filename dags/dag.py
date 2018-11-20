@@ -2,6 +2,7 @@ import airflow
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
+from airflow.utils.trigger_rule import TriggerRule
 from pendulum import Pendulum
 
 args = {"owner": "Harmen", "start_date": airflow.utils.dates.days_ago(14)}
@@ -19,11 +20,12 @@ def get_person_to_mail(execution_date: Pendulum, **context):
     return weekday_person_to_email[int(execution_date.format("d"))]
 
 
-with DAG(dag_id="skipdag",default_args=args):
-    brancher = BranchPythonOperator(task_id="brancher", python_callable=get_person_to_mail, provide_context=True)
-    for person in ['Bob', 'Joe', 'Alice']:
-        t = DummyOperator(task_id=person)
-        brancher >> t
+dag = DAG(dag_id="skipdag",default_args=args)
+brancher = BranchPythonOperator(task_id="brancher", python_callable=get_person_to_mail, provide_context=True, dag=dag)
+final = DummyOperator(task_id="final", dag=dag, trigger_rule=TriggerRule.ONE_SUCCESS)
+for person in ['Bob', 'Joe', 'Alice']:
+    t = DummyOperator(task_id=person, dag=dag)
+    brancher >> t >> final
 
 
 
