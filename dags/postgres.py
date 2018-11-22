@@ -120,7 +120,7 @@ http2gcs = HttpToGcsOperator(
 gcs2bq = GoogleCloudStorageToBigQueryOperator(
     task_id="gcs2bq",
     bucket="europe-west1-training-airfl-596abff0-bucket",
-    source_objects=["/average_prices/transfer_date={{ ds }}/*"],
+    source_objects=["average_prices/transfer_date={{ ds }}/*"],
     destination_project_dataset_table="airflowbolcom-6b5317463050ef21:prices.prices_123",
     source_format="PARQUET",
     write_disposition="WRITE_TRUNCATE",
