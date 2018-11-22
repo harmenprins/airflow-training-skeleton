@@ -1,2 +1,2 @@
 apache-airflow==1.10.0
-apiclient
+google-api-python-client
