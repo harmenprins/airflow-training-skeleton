@@ -121,7 +121,7 @@ gcs2bq = GoogleCloudStorageToBigQueryOperator(
     task_id="gcs2bq",
     bucket="europe-west1-training-airfl-596abff0-bucket",
     source_objects=["/average_prices/transfer_date={{ ds }}/*"],
-    destination_project_dataset_table="prices.prices${{ ds_nodash }}",
+    destination_project_dataset_table="Training Boldotcom - hprins:prices.prices${{ ds_nodash }}",
     source_format="PARQUET",
     write_disposition="WRITE_TRUNCATE",
     dag=dag
