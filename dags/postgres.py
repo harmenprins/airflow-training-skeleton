@@ -113,7 +113,7 @@ http2gcs = HttpToGcsOperator(
     task_id="get_currency",
     project_id=project_id,
     dag=dag,
-    gcs_conn_id='currency',
+    http_conn_id='currency',
 )
 
 pgsl_to_gcs >> dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
