@@ -117,4 +117,4 @@ http2gcs = HttpToGcsOperator(
 )
 
 pgsl_to_gcs >> dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
-http2gcs >> dataproc_create_cluster
+#http2gcs >> dataproc_create_cluster
