@@ -3,6 +3,7 @@ from tempfile import NamedTemporaryFile
 import airflow
 from airflow import DAG
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
+from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 from airflow.contrib.operators.postgres_to_gcs_operator import PostgresToGoogleCloudStorageOperator
 from airflow.hooks.http_hook import HttpHook
 from airflow.utils.trigger_rule import TriggerRule
@@ -116,5 +117,15 @@ http2gcs = HttpToGcsOperator(
     http_conn_id='currency',
 )
 
-pgsl_to_gcs >> dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
+gcs2bq = GoogleCloudStorageToBigQueryOperator(
+    task_id="gcs2bq",
+    bucket="europe-west1-training-airfl-596abff0-bucket",
+    source_objects=["/average_prices/"],
+    destination_project_dataset_table="prices.prices${{ ds_nodash }}",
+    source_format="PARQUET",
+    write_disposition="WRITE_TRUNCATE",
+    dag=dag
+)
+
+pgsl_to_gcs >> dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster >> gcs2bq
 http2gcs >> dataproc_create_cluster
