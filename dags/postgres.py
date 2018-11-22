@@ -107,12 +107,13 @@ class HttpToGcsOperator(BaseOperator):
 
 
 http2gcs = HttpToGcsOperator(
-    endpoint="https://europe-west1-gdd-airflow-training.cloudfunctions.net/airflow-training-transform-valutas?date=2018-01-01&from=GBP&to=EUR",
+    endpoint="date={{ ds }}&from=GBP&to=EUR",
     gcs_bucket="europe-west1-training-airfl-596abff0-bucket",
     gcs_path="currency/",
     task_id="get_currency",
     project_id=project_id,
-    dag=dag
+    dag=dag,
+    gcs_conn_id='currency',
 )
 
 pgsl_to_gcs >> dataproc_create_cluster >> compute_aggregates >> dataproc_delete_cluster
