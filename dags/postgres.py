@@ -109,7 +109,7 @@ class HttpToGcsOperator(BaseOperator):
 http2gcs = HttpToGcsOperator(
     endpoint="date={{ ds }}&from=GBP&to=EUR",
     gcs_bucket="europe-west1-training-airfl-596abff0-bucket",
-    gcs_path="currency/",
+    gcs_path="currency/{{ ds }}-EUR.json",
     task_id="get_currency",
     project_id=project_id,
     dag=dag,
